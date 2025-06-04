@@ -12,6 +12,7 @@ import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import { connectToDatabase, disconnectFromDatabase } from './lib/mongoose';
+import { logger } from './lib/winston';
 
 const app = express();
 
@@ -21,6 +22,7 @@ const corsOptions: CorsOptions = {
             callback(null, true);
         } else {
             callback(new Error(`CORS error: ${origin} not allowed by CORS`), false);
+            logger.warn(`CORS error: ${origin} not allowed by CORS`);
         }
     }
 };
@@ -50,12 +52,12 @@ app.use(limiter);
         app.use('/api/v1', v1Routes);
 
         app.listen(config.PORT, () => {
-            console.log(`Server is running on http://localhost:${config.PORT}`);
+            logger.info(`Server is running on http://localhost:${config.PORT}`);
         });
     } catch (error) {
-        console.error('Error starting server:', error);
+        logger.error('Error starting server:', error);
         if (config.NODE_ENV !== 'development') {
-            console.log('Exiting process...');
+            logger.info('Exiting process...');
             process.exit(1);
         }
     }
@@ -72,11 +74,11 @@ app.use(limiter);
 
 const handleServerShutdown = async () => {
     try {
-        console.log('Server is shutting down...');
+        logger.warn('Server is shutting down...');
         await disconnectFromDatabase();
         process.exit(0);
     } catch (error) {
-        console.error('Error during server shutdown:', error);
+        logger.error('Error during server shutdown:', error);
     }
 }
 

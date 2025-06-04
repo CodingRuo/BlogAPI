@@ -5,6 +5,7 @@
 
 import config from "@/config";
 import mongoose, { ConnectOptions } from "mongoose";
+import { logger } from "./winston";
 
 const clientOptions: ConnectOptions = {
     dbName: 'blog-db',
@@ -23,7 +24,7 @@ export const connectToDatabase = async (): Promise<void> => {
 
     try {
         await mongoose.connect(config.MONGODB_URI, clientOptions);
-        console.log('Connected to the database successfully', {
+        logger.info('Connected to the database successfully', {
             uri: config.MONGODB_URI,
             options: clientOptions
         });
@@ -31,14 +32,14 @@ export const connectToDatabase = async (): Promise<void> => {
         if (error instanceof Error) {
             throw error;
         }
-        console.error('Error connecting to MongoDB:', error);
+        logger.error('Error connecting to MongoDB:', error);
     }
 }
 
 export const disconnectFromDatabase = async (): Promise<void> => {
     try {
         await mongoose.disconnect();
-        console.log('Disconnected from the database successfully', {
+        logger.info('Disconnected from the database successfully', {
             uri: config.MONGODB_URI,
             options: clientOptions
         });
@@ -46,6 +47,6 @@ export const disconnectFromDatabase = async (): Promise<void> => {
         if (error instanceof Error) {
             throw new Error(error.message);
         }
-        console.error('Error disconnecting from MongoDB:', error);
+        logger.error('Error disconnecting from MongoDB:', error);
     }
 }
