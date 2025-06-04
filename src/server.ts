@@ -4,8 +4,12 @@
  */
 
 import config from '@/config';
+import limiter from '@/lib/express_rate_limit';
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
+import helmet from 'helmet';
 
 const app = express();
 
@@ -20,13 +24,31 @@ const corsOptions: CorsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
+app.use(compression({
+    threshold: 1024 // Only compress responses that are larger than 1KB
+}));
+app.use(cookieParser());
+app.use(limiter);
 
-app.get('/', (req, res) => {
-    res.json({
-        message: 'Hello World'
-    });
-});
+(async () => {
+    try {
+        app.get('/', (req, res) => {
+            res.json({
+                message: 'Hello World'
+            });
+        });
 
-app.listen(config.PORT, () => {
-    console.log(`Server is running on http://localhost:${config.PORT}`);
-});
+        app.listen(config.PORT, () => {
+            console.log(`Server is running on http://localhost:${config.PORT}`);
+        });
+    } catch (error) {
+        console.error('Error starting server:', error);
+        if (config.NODE_ENV !== 'development') {
+            console.log('Exiting process...');
+            process.exit(1);
+        }
+    }
+})();
