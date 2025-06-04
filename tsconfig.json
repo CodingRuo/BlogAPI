@@ -9,16 +9,11 @@
         "outDir": "dist",
         "rootDir": "src",
         "baseUrl": "./",
-        "removeComments": true
+        "removeComments": true,
+        "paths": {
+            "@/*": ["src/*"]
+        }
     },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist",
-        "build",
-        "coverage",
-        "**/*.spec.ts"
-    ],
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "dist", "build", "coverage", "**/*.spec.ts"]
 }
