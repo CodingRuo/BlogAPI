@@ -4,7 +4,8 @@
  */
 
 import { logger } from '@/lib/winston';
-import { IUser } from '@/models/user';
+import User, { IUser } from '@/models/user';
+import { genUsername } from '@/utils';
 import { Request, Response } from 'express';
 
 type UserData = Pick<IUser, 'email' | 'password' | 'role'>;
@@ -12,9 +13,26 @@ type UserData = Pick<IUser, 'email' | 'password' | 'role'>;
 const register = async (req: Request, res: Response): Promise<void> => {
     const { email, password, role } = req.body as UserData;
 
+    console.log({ email, password, role });
+
     try {
+        const username = genUsername();
+
+        const newUser = await User.create({
+            username,
+            email,
+            password,
+            role
+        });
+
+        // Generate access token and refresh token for new user;
+
         res.status(201).json({
-            message: 'New user registered successfully',
+            user: {
+                username: newUser.username,
+                email: newUser.email,
+                role: newUser.role
+            }
         });
     } catch (error) {
         res.status(500).json({
