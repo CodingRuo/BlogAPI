@@ -4,7 +4,7 @@
  */
 
 import bcrypt from 'bcrypt';
-import { model, Schema } from "mongoose";
+import { GetLeanResultType, Model, model, Schema } from "mongoose";
 
 export interface IUser {
     username: string;
@@ -17,6 +17,10 @@ export interface IUser {
         website?: string;
     };
 };
+
+export interface IUserModel extends Model<IUser> {
+    authenticate(email: string, password: string): Promise<GetLeanResultType<IUser, IUser, 'findOne'> | null>
+}
 
 const userSchema = new Schema<IUser>({
     username: {
@@ -71,8 +75,25 @@ userSchema.pre('save', async function (next) {
 
     this.password = await bcrypt.hash(this.password, 10);
     next();
-})
+});
 
-const User = model<IUser>('User', userSchema);
+userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+    return await bcrypt.compare(candidatePassword, this.password);
+};
+
+userSchema.statics.authenticate = async function (this: Model<IUser>, email: string, password: string) {
+    const user = await this.findOne({ email }).select('username email password role').lean().exec();
+
+
+    if (!user) {
+        return null;
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    return isMatch ? user : null;
+};
+
+const User = model<IUser, IUserModel>('User', userSchema);
 
 export { User };

@@ -4,7 +4,7 @@
  */
 
 import bcrypt from 'bcrypt';
-import { Schema, Types, model } from "mongoose";
+import { Model, Schema, Types, model } from "mongoose";
 
 interface IToken {
     token: string;
@@ -12,7 +12,13 @@ interface IToken {
     expiresAt?: Date
 }
 
-const tokenSchema = new Schema<IToken>({
+interface ITokenMethods {
+    compareToken(candidateToken: string): Promise<boolean>
+}
+
+interface ITokenModel extends Model<IToken, {}, ITokenMethods> { }
+
+const tokenSchema = new Schema<IToken, ITokenModel, ITokenMethods>({
     token: {
         type: String,
         required: true,
@@ -47,6 +53,6 @@ tokenSchema.methods.compareToken = async function (candidateToken: string): Prom
     return bcrypt.compare(candidateToken, this.token);
 };
 
-const Token = model<IToken>('Token', tokenSchema);
+const Token = model<IToken, ITokenModel>('Token', tokenSchema);
 
 export { Token };
