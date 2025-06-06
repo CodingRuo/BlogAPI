@@ -3,8 +3,9 @@
  * @license Apache-2.0
  */
 
-import authRoutes from '@/routes/v1/auth';
+
 import { Router } from 'express';
+import { authRouter } from './auth';
 
 const router = Router();
 
@@ -18,6 +19,6 @@ router.get('/', (req, res) => {
     });
 });
 
-router.use('/auth', authRoutes);
+router.use('/auth', authRouter);
 
 export default router;

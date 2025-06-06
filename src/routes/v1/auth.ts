@@ -4,12 +4,13 @@
  */
 
 import { register } from '@/controllers/v1/auth/register';
+import { validationError } from '@/middlewares/validationError';
 import { Router } from 'express';
 import { body } from 'express-validator';
 
-const router = Router();
+const authRouter = Router();
 
-router.post('/register',
+authRouter.post('/register',
     body('email')
         .trim()
         .notEmpty()
@@ -17,7 +18,9 @@ router.post('/register',
         .isLength({ max: 50 })
         .withMessage('Email must be less than 50 characters')
         .isEmail()
-        .withMessage('Invalid email address')
-    , register);
+        .withMessage('Invalid email address'),
+    validationError,
+    register
+);
 
-export default router;
+export { authRouter };
