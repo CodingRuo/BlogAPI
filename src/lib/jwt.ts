@@ -3,7 +3,7 @@
  * @license Apache-2.0
  */
 
-import config from '@/config';
+import { config } from '@/config';
 import jwt from 'jsonwebtoken';
 import { Types } from 'mongoose';
 

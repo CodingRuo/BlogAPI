@@ -3,7 +3,7 @@
  * @license Apache-2.0
  */
 
-import register from '@/controllers/v1/auth/register';
+import { register } from '@/controllers/v1/auth/register';
 import { Router } from 'express';
 import { body } from 'express-validator';
 

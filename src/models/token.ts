@@ -47,4 +47,6 @@ tokenSchema.methods.compareToken = async function (candidateToken: string): Prom
     return bcrypt.compare(candidateToken, this.token);
 };
 
-export default model<IToken>('Token', tokenSchema);
+const Token = model<IToken>('Token', tokenSchema);
+
+export { Token };

@@ -3,11 +3,11 @@
  * @license Apache-2.0
  */
 
-import config from '@/config';
+import { config } from '@/config';
 import { generateAccessToken, generateRefreshToken } from '@/lib/jwt';
 import { logger } from '@/lib/winston';
-import Token from '@/models/token';
-import User, { IUser } from '@/models/user';
+import { Token } from '@/models/token';
+import { IUser, User } from '@/models/user';
 import { genUsername } from '@/utils';
 import { Request, Response } from 'express';
 
@@ -81,4 +81,4 @@ const register = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-export default register;
+export { register };

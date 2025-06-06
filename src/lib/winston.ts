@@ -3,7 +3,7 @@
  * @license Apache-2.0
  */
 
-import config from '@/config';
+import { config } from '@/config';
 import winston from 'winston';
 
 const { combine, timestamp, json, errors, align, printf, colorize } = winston.format;

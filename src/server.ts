@@ -3,8 +3,8 @@
  * @license Apache-2.0
  */
 
-import config from '@/config';
-import limiter from '@/lib/express_rate_limit';
+import { config } from '@/config';
+import { limiter } from '@/lib/express_rate_limit';
 import v1Routes from '@/routes/v1';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
