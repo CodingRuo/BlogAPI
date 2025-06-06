@@ -19,7 +19,7 @@ if (config.NODE_ENV === 'development') {
                 align(),
                 printf(({ level, message, timestamp, ...metadata }) => {
                     const metaString = Object.keys(metadata).length ? `\n${JSON.stringify(metadata)}` : '';
-                    return `${timestamp} [${level.toUpperCase()}]: ${message}${metaString}`;
+                    return `${timestamp} [${level}]: ${message}${metaString}`;
                 })
             )
         })
