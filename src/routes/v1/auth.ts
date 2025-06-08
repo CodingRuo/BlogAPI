@@ -4,8 +4,10 @@
  */
 
 import { login } from '@/controllers/v1/auth/login';
+import { logout } from '@/controllers/v1/auth/logout';
 import { refreshToken } from '@/controllers/v1/auth/refresh-tokens';
 import { register } from '@/controllers/v1/auth/register';
+import { authenticate } from '@/middlewares/authenticate';
 import { Router } from 'express';
 import { cookie } from 'express-validator';
 
@@ -19,5 +21,6 @@ authRouter.post('/refresh-token',
         .withMessage('Refresh token required'),
     refreshToken
 );
+authRouter.post('/logout', authenticate, logout);
 
 export { authRouter };

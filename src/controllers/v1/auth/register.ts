@@ -38,6 +38,16 @@ const register = async (req: Request, res: Response): Promise<void> => {
             role
         });
 
+        // ✅ SINGLE-SESSION: Lösche alle bestehenden Tokens (falls User sich mehrfach registriert)
+        const deletedCount = await Token.deleteMany({ userId: newUser._id });
+
+        if (deletedCount.deletedCount > 0) {
+            logger.info('Replaced existing session for newly registered user', {
+                userId: newUser._id,
+                deletedTokens: deletedCount.deletedCount
+            });
+        }
+
         // Generate access token and refresh token for new user;
         const accessToken = generateAccessToken(newUser._id);
         const refreshToken = generateRefreshToken(newUser._id);

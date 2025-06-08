@@ -26,6 +26,16 @@ const login = async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
+        // ✅ SINGLE-SESSION: Lösche alle bestehenden Tokens (egal ob gültig oder nicht)
+        const deletedCount = await Token.deleteMany({ userId: user._id });
+
+        if (deletedCount.deletedCount > 0) {
+            logger.info('Replaced existing session for user', {
+                userId: user._id,
+                deletedTokens: deletedCount.deletedCount
+            });
+        }
+
         // Generate access token and refresh token for new user;
         const accessToken = generateAccessToken(user._id);
         const refreshToken = generateRefreshToken(user._id);
